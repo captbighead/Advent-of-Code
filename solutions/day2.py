@@ -4,12 +4,9 @@ Solution Template for Advent of Code Solutions.
 
 import utilities.aoc_utils as au
 def solve():
-    # The default template will read an input file from the inputs folder with
-    # the same name as this file.
     inputName = __name__.replace("solutions.","inputs\\") + ".txt"
     input = au.inputFileAsStrings(inputName)
 
-    # Go ahead and create a banner here to explain the problem.
     au.printBanner("PART 1 - ROCK PAPER SCISSORS: In order to cheat at Rock, Pa"
                    "per, Scissors and get the tent spot closest to the snacks ("
                    "is this going to be the real theme of the season?) we need "
@@ -35,15 +32,17 @@ def solve():
         else:
             return 0
 
+
     def scoreGame(rs):
         myScore = 0
         for round in rs:
             myScore += round[1] + scoreRound(round)
         return myScore
 
+
     print(f"After using the strategy guide, I'd score {scoreGame(rounds)} pts")
         
-    au.printBanner("PART 2 - Um, Actually: It turns out our assumption of how t"
+    au.printBanner("PART 2 - UM, ACTUALLY: It turns out our assumption of how t"
                    "o read the guide was incorrect! Where before, we thought X "
                    "= Rock, Y = Paper, and Z = Scissors, it was actually X = Lo"
                    "se, Y = Draw, Z = Win (which makes much more sense).")
@@ -59,6 +58,7 @@ def solve():
             return (r[0], r[0])
         elif r[1] == 3: # We need to win
             return (r[0], loses[r[0]])
+
 
     rounds = [calledShot(r) for r in rounds]
     print(f"After using the guide *correctly*, I'd score {scoreGame(rounds)} pt"

@@ -4,12 +4,9 @@ Solution Template for Advent of Code Solutions.
 
 import utilities.aoc_utils as au
 def solve():
-    # The default template will read an input file from the inputs folder with
-    # the same name as this file.
     inputName = __name__.replace("solutions.","inputs\\") + ".txt"
     input = au.inputFileAsStrings(inputName)
 
-    # Go ahead and create a banner here to explain the problem.
     au.printBanner("PART ONE - CALORIE COUNTING: 2022's Advent of Code takes us"
                    " on a hike through a vast jungle! Our first part of our fir"
                    "st day is all about rationing: we need to take a list of fo"
@@ -36,6 +33,8 @@ def solve():
                    "de a contingency for such a horrible eventuality, they've n"
                    "ow asked for the calories amongst the top three carriers in"
                    "stead.")
+
+    # It was already sorted! That was easy. 
     topThree = cargo[-1] + cargo[-2] + cargo[-3]
     print(f"The three elves with the most calories are carrying a total of "
           f"{topThree} calories.")
