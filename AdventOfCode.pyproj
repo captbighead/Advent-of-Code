@@ -1,0 +1,91 @@
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>e8726ed4-e08a-4c21-a0bc-63c3965452ee</ProjectGuid>
+    <ProjectHome>.</ProjectHome>
+    <StartupFile>AdventOfCode.py</StartupFile>
+    <SearchPath>
+    </SearchPath>
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <Name>AdventOfCode</Name>
+    <RootNamespace>AdventOfCode</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugSymbols>true</DebugSymbols>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugSymbols>true</DebugSymbols>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="AdventOfCode.py" />
+    <Compile Include="solutions\day0.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="solutions\day1.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="solutions\day10.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="solutions\day11.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="solutions\day12.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="solutions\day13.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="solutions\day2.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="solutions\day3.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="solutions\day4.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="solutions\day5.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="solutions\day6.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="solutions\day7.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="solutions\day8.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="solutions\day9.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="solutions\__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="utilities\aoc_utils.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="utilities\__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="inputs\" />
+    <Folder Include="solutions\" />
+    <Folder Include="utilities\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
+  <!-- Uncomment the CoreCompile target to enable the Build command in
+       Visual Studio and specify your pre- and post-build commands in
+       the BeforeBuild and AfterBuild targets below. -->
+  <!--<Target Name="CoreCompile" />-->
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+</Project>
