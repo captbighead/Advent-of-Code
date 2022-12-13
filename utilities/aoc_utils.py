@@ -6,6 +6,7 @@ def inputFileAsStrings(filename):
         input = [line.strip() for line in f]
     return input
 
+
 def printBanner(problem_statement, day_num=-1):
     if day_num != -1:
         leadSpace = " " if day_num < 10 else ""
@@ -34,12 +35,14 @@ def printBanner(problem_statement, day_num=-1):
         print(line)
     print("\n")
 
+
 def unitVectors():
     """ Returns list of tuples representing unit vectors for cardinal directions
 
         If it matters, the vectors are, in order: Up, Right, Down, Left (NEWS)
     """
-    return [( 0,-1),( 1, 0),( 0, 1),(-1, 0),]   
+    return [( 0,-1),( 1, 0),( 0, 1),(-1, 0)]   
+
 
 def parse2DGrid(gridList, translation=lambda x: x):
     return_map = {}
@@ -51,6 +54,7 @@ def parse2DGrid(gridList, translation=lambda x: x):
 
 def vectorAdd(v, u):
     return (v[0] + u[0], v[1] + u[1])
+
 
 class TreeNode:
 
