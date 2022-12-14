@@ -4,8 +4,6 @@ Solution Template for Advent of Code Solutions.
 
 import utilities.aoc_utils as au
 def solve():
-    # The default template will read an input file from the inputs folder with
-    # the same name as this file.
     inputName = __name__.replace("solutions.","inputs\\") + ".txt"
     packets = au.inputFileAsStrings(inputName)
     packets1 = [
@@ -37,7 +35,12 @@ def solve():
     #packets = packets1
 
     # Go ahead and create a banner here to explain the problem.
-    au.printBanner("PART ONE - DISTRESS SIGNAL", 13)
+    au.printBanner("PART ONE - DISTRESS SIGNAL: We've recieved a distress signa"
+                   "l from our lost elves! Unfortunately, it came to us in a ra"
+                   "ndom order, and we need to sort the packets based on a spec"
+                   "ial formula. First, prove we can compare any two packets by"
+                   " counting pairs of packets that are in the right order. ", 
+                   13)
     
     def parse(s):   # Recursively turns a packet string into its underlying code
         # Base Case 1 - s is a numeric string (an int):
@@ -113,7 +116,9 @@ def solve():
     print(f"Through the powers of recursion, we've found that {ordered_indices}"
           " pairs of packets are ordered!")
 
-    au.printBanner("PART TWO - SORT IT ALL: <Now we sort the whole list>")
+    au.printBanner("PART TWO - SORT IT ALL: Now we sort the whole list and use "
+                   "the indices of two new seed values we're going to put into "
+                   "it to find the decoder key.")
 
     packets.append("[[2]]")
     packets.append("[[6]]")

@@ -12,8 +12,11 @@ def solve():
     #lines = lines_ex
 
     # Go ahead and create a banner here to explain the problem.
-    au.printBanner("PART ONE - REGOLITH RESERVOIR: <Simulate falling sand and f"
-                   "ind when the sand starts overflowing.>", 14)
+    au.printBanner("PART ONE - REGOLITH RESERVOIR: We're in a cave filling with"
+                   " sand! In order to know where to stand to not be crushed, w"
+                   "e need to be able to simulate the sand as it fills the spac"
+                   "e. Assume that the sand will fall into an endless void to p"
+                   "rove the model is understood.", 14)
 
 
     grid = {(500,0):"+"}
