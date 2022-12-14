@@ -4,14 +4,11 @@ Solution Template for Advent of Code Solutions.
 
 import utilities.aoc_utils as au
 def solve():
-    # The default template will read an input file from the inputs folder with
-    # the same name as this file.
     inputName = __name__.replace("solutions.","inputs\\") + ".txt"
     lines = au.inputFileAsStrings(inputName)
     lines_ex = ["498,4 -> 498,6 -> 496,6","503,4 -> 502,4 -> 502,9 -> 494,9"]
     #lines = lines_ex
 
-    # Go ahead and create a banner here to explain the problem.
     au.printBanner("PART ONE - REGOLITH RESERVOIR: We're in a cave filling with"
                    " sand! In order to know where to stand to not be crushed, w"
                    "e need to be able to simulate the sand as it fills the spac"
@@ -76,7 +73,7 @@ def simulateSandfall(grid, visualize=0, hasFloor=False):
         bounds["maxX"] = max(bounds["maxX"], xy[0])
         bounds["minY"] = min(bounds["minY"], xy[1])
         bounds["maxY"] = max(bounds["maxY"], xy[1])
-    floorY = bounds["maxY"] + 2
+    floorY = bounds["maxY"] + 2 # If we have a floor, this is it's y value
 
     # Visualize the blank state, if we're visualizing.
     if visualize:
@@ -113,7 +110,7 @@ def simulateSandfall(grid, visualize=0, hasFloor=False):
                 bounds["minX"] = min(bounds["minX"], dl[0])
                 bounds["maxX"] = max(bounds["maxX"], dr[0])
 
-
+            # Use the projections to actually pathfind, and move if possible.
             if grid.get(dn, " ") not in ("o", "#"):
                 sand = dn
                 continue
@@ -130,7 +127,7 @@ def simulateSandfall(grid, visualize=0, hasFloor=False):
 
         # If we got out of the loop without being at rest, we have reached a
         # point where all future sand will fall into the endless void. This is 
-        # the true end condition.
+        # the true end condition (for Part 1)
         if not atRest:
             break
 
@@ -139,6 +136,10 @@ def simulateSandfall(grid, visualize=0, hasFloor=False):
         grid[sand] = "o"
         sandCount += 1
         if visualize and not sandCount % visualize: # Visualize after n grains
+            # bounds["maxY"] is important to the logic operations of both part 1
+            # and part 2 (in part 2, we check against it to know when to insert
+            # a floor as needed). This means that the logic bounds and the 
+            # render bounds need to be different in part 2. 
             renderBounds = bounds.copy()
             if hasFloor: 
                 renderBounds["maxY"] = floorY
@@ -148,6 +149,7 @@ def simulateSandfall(grid, visualize=0, hasFloor=False):
     
     # We've finished looping. The sandCount shows the grains at rest. 
     if visualize:
+        # Copying code is a sin. I'm a sinner.
         renderBounds = bounds.copy()
         if hasFloor: 
             renderBounds["maxY"] = floorY
