@@ -11,8 +11,10 @@ def solve():
     #inputGrid = ["Sabqponm","abcryxxl","accszExk","acctuvwj","abdefghi"]
 
     # Go ahead and create a banner here to explain the problem.
-    au.printBanner("PART ONE - HILL CLIMBING ALGORITHM: <Find the shortest path"
-                   " up a hill from spot S>", 12)
+    au.printBanner("PART ONE - HILL CLIMBING ALGORITHM: We need to climb a real"
+                   "ly big hill, but only using orthognal grid-based movement. "
+                   "Find the shortest path from our starting position at the lo"
+                   "west elevation to the highest point.", 12)
     
     # In this generic template, we're just going to parrot the input file.
     def translate(char):
@@ -79,8 +81,10 @@ def solve():
     print(f"The shortest path to the end spot is "
           f"{dijkstra(elev_map, p1_start, end)} steps long")
 
-    au.printBanner("PART TWO - MAKE IT GENERIC: <Find the shortest path from an"
-                   "y spot with elevation a.>")
+    au.printBanner("PART TWO - MAKE IT GENERIC: Now that we've found one shorte"
+                   "st path, find the point at our elevation such that the shor"
+                   "test path from that point is shorter than any other path at"
+                   " our elevation.")
 
     minPath = 999999
     for start in p2_starts:

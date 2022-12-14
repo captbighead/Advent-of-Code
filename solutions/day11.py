@@ -91,6 +91,12 @@ def solve():
             index += 7
         return monkeyList
 
+    au.printBanner("PART ONE - MONKEY IN THE MIDDLE: Weirdly robotic monkeys ha"
+                   "ve stolen our stuff, and are tossing it around based on a h"
+                   "yper-specific formula. After 20 rounds of the monkeys tossi"
+                   "ng items, how many times did a monkey inspect one of the it"
+                   "ems before tossing it?", 11)
+
     monkeys = initMonkeys(monkey_defs)
     for i in range(20):
         for m in monkeys:
@@ -104,6 +110,14 @@ def solve():
     mb = monkeys[-1].inspections * monkeys[-2].inspections
     print(f"According to the infallible Monkey Business formula, the amount of "
           f"monkey business was {mb}")
+
+    au.printBanner("PART TWO - HOW FAST ARE THESE MONKEYS?!: The monkeys aren't"
+                   " just going to throw items for 20 rounds. Now they're going"
+                   " to throw them for 10000 rounds! The formula they use invol"
+                   "ves numbers that are astronomically large, so we need to fi"
+                   "nd a way to compute their algorithm while not getting stuck"
+                   " trying to compute divisibilty tests on numbers that are th"
+                   "ousands of digits long.")
 
     # Reinstantiate the monkeys from the input file (nothing carries over)
     monkeys = initMonkeys(monkey_defs)
