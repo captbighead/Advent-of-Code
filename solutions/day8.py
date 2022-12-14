@@ -12,8 +12,13 @@ def solve():
     #input = ["30373","25512","65332","33549","35390"]
 
     # Go ahead and create a banner here to explain the problem.
-    au.printBanner("PART ONE - TREETOP TREE HOUSE: <Find all the trees visible "
-                   "from at least one (orthogonal) angle", 8)
+    au.printBanner("PART ONE - TREETOP TREE HOUSE: We need to set up a forward "
+                   "base camp in a spiffy new treehouse, but because we work in"
+                   " a very secretive organization, (elves really are ride or d"
+                   "ie) we need to find one that's not visible from outside the"
+                   " camp. Look for trees that are shadowed from all four cardi"
+                   "nal directions by trees of greater or equal height. And I g"
+                   "uess, tell us how many aren't.", 8)
 
     tree_map = {}
     for y in range(len(input)):
@@ -42,9 +47,12 @@ def solve():
     print(f"Of {len(tree_map)} trees, {visibleCount} are visible from outside t"
           "he grid.")
 
-    au.printBanner("PART TWO - BUT FORGET ALL THAT: <Find the 'scenic score' of"
-                   " the tree with the largest 'scenic score' (the produc of th"
-                   "e number of trees visible to it from each direction)")
+    au.printBanner("PART TWO - BUT FORGET ALL THAT: After all that, now the elv"
+                   "es just want to find the site with the nicest view, (the on"
+                   "e that can see the most trees along the cardinal directions"
+                   " from its origin. Find the 'scenic score' of the tree with "
+                   "the largest 'scenic score' (the produc of the number of tre"
+                   "es visible to it from each direction)")
 
     def scenicScore(xy):
         if xy == (2,3):

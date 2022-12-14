@@ -6,16 +6,17 @@ import utilities.aoc_utils as au
 
 
 def solve():
-    # The default template will read an input file from the inputs folder with
-    # the same name as this file.
     inputName = __name__.replace("solutions.","inputs\\") + ".txt"
     input = au.inputFileAsStrings(inputName)
 
-    # Go ahead and create a banner here to explain the problem.
-    au.printBanner("PART ONE - NO SPACE LEFT ON DEVICE: <Calculate the sum of t"
-                   "he file folders of size at least 100000>", 7)
+    au.printBanner("PART ONE - NO SPACE LEFT ON DEVICE: Now it appears the devi"
+                   "ce needs to be patched, but we don't have enough hard drive"
+                   " space to do so. We need to run a cleanup, but the first st"
+                   "ep in doing that is proving that we can take stock of the h"
+                   "arddrive's contents. Return the sum total size of all direc"
+                   "tories that are at most 100,000 bytes large.", 7)
 
-    # In this generic template, we're just going to parrot the input file.
+    # Generate a tree with a custom tree implementation from aoc_utils
     currNode = None
     rootNode = None
     lnNum = 0
@@ -79,8 +80,9 @@ def solve():
 
     print(f"The sum of the file sizes is {sum}")
 
-    au.printBanner("PART TWO - BALETED: <Find the smallest directory that, once"
-                   " deleted, frees up at least 30000000 bytes.>")
+    au.printBanner("PART TWO - BALETED: Now we need to actually choose a direct"
+                   "ory to delete. Find the smallest directory that, once delet"
+                   "ed, frees up at least 30000000 bytes.>")
 
     systemMax = 70000000
     systemUsed = size(rootNode)
