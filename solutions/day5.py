@@ -4,8 +4,6 @@ Solution Template for Advent of Code Solutions.
 
 import utilities.aoc_utils as au
 def solve():
-    # The default template will read an input file from the inputs folder with
-    # the same name as this file.
     inputName = __name__.replace("solutions.","inputs\\") + ".txt"
     input = []
     with open(inputName) as f:
@@ -17,9 +15,10 @@ def solve():
     #         "move 3 from 1 to 3","move 2 from 2 to 1","move 1 from 1 to 2"]
 
 
-    # Go ahead and create a banner here to explain the problem.
-    au.printBanner("PART ONE - SUPPLY STACKS: <Rearrange the original stacks an"
-                   "d output the top barrels on each stack.>", 5)
+    au.printBanner("PART ONE - SUPPLY STACKS: Stacks of crates within the camp "
+                   "need to be reorganized according to a list of instructions "
+                   "from the elves. Follow those instructions and then output t"
+                   "he ids of the crates at the top of each stack.", 5)
     
     # Determined from Visual inspection:
     totalStacks = 9 
@@ -66,9 +65,14 @@ def solve():
         print(f"{s[-1]}", end="")
     print()
 
-    au.printBanner("PART TWO - EFFICIENCY: <Rearrange the original stacks and o"
-                   "utput the top barrels on each stack. You can move multiples"
-                   " at once now>")    
+    au.printBanner("PART TWO - EFFICIENCY: In the previous reorganization we ha"
+                   "d to move a single crate at a time, inverting the order of "
+                   "the moved crates in each operation. For part two, we found "
+                   "a new mode for the crane that could pick up multiple cranes"
+                   " at once, preserving their order. Following the same set of"
+                   " instructions on the same starting set of crates, output th"
+                   "e tops of the stacks now, after moving all of them at once."
+                   "")    
 
 
     # The default template will read an input file from the inputs folder with
