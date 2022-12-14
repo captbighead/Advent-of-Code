@@ -19,21 +19,44 @@ def printBanner(problem_statement, day_num=-1):
     else:
         print("-"*80)
     
+    print("\n")
+    printWrapped(problem_statement)
+    print("\n")
+
+
+def printWrapped(s):
     # Let's try and make the banner "line-wrap"
     i = 0
     lines = []
     right = i
-    while i*80+80 < len(problem_statement):
+    while i*80+80 < len(s):
         left = i*80
         right = i*80+80
-        lines.append(problem_statement[left:right])
+        lines.append(s[left:right])
         i += 1
-    lines.append(problem_statement[right:])
-    
-    print("\n")
+    lines.append(s[right:])
     for line in lines:
         print(line)
-    print("\n")
+
+
+def render2DGrid(grid, bounds=None, whitespace=" "):
+    # Find the bounds of the grid's co-ordinate system if not provided.
+    minX = [k for k in grid.keys()][0][0] if bounds is None else bounds["minX"]
+    maxX = [k for k in grid.keys()][0][0] if bounds is None else bounds["maxX"]
+    minY = [k for k in grid.keys()][0][1] if bounds is None else bounds["minY"]
+    maxY = [k for k in grid.keys()][0][1] if bounds is None else bounds["maxY"]
+    if bounds is None:
+        for xy in grid.keys():
+            minX = min(minX, xy[0])
+            minY = min(minY, xy[1])
+            maxX = max(maxX, xy[0])
+            maxY = max(maxY, xy[1])
+
+    for y in range(minY, maxY+1):
+        for x in range(minX, maxX+1):
+            print(grid.get((x,y), whitespace), end="")
+        print()
+
 
 
 def unitVectors():
