@@ -64,11 +64,18 @@ def solve():
         o = op == "addx" and not o
 
     # Go ahead and create a banner here to explain the problem.
-    au.printBanner("PART ONE - CATHODE-RAY TUBE", 10)
+    au.printBanner("PART ONE - CATHODE-RAY TUBE: We have a small program used t"
+                   "o interpret a stream of signals. We need to show our model "
+                   "for interpreting it works by reporting the signal strengths"
+                   " (multiplied by the ticks they occurred on) as a sum.", 10)
 
     print(f"\nThe sum of the signal strengths is {sumSignals}")
         
-    au.printBanner("PART TWO - PRINTSCREEN")
+    au.printBanner("PART TWO - PRINTSCREEN: Now, implementing a render code to "
+                   "work with the signal interpreter, we need to show what the "
+                   "device displays to us.")
+
+    # We already did that in the first pass :) 
     for ln in crtBuffer:
         print(ln)
 

@@ -6,21 +6,20 @@ import time
 import os
 
 def solve():
-    # The default template will read an input file from the inputs folder with
-    # the same name as this file.
     inputName = __name__.replace("solutions.","inputs\\") + ".txt"
     instrs = au.inputFileAsStrings(inputName)
     #instrs = ["R 4","U 4","L 3","D 1","R 4","D 1","L 5","R 2"]
     #instrs = ["R 5","U 8","L 8","D 3","R 17","D 10","L 25","U 20"]
 
-    # Go ahead and create a banner here to explain the problem.
-    au.printBanner("PART ONE - ROPE BRIDGE: <Simulate a rope moving around and "
-                   "report where the tail of the rope ended up.>", 9)
+    au.printBanner("PART ONE - ROPE BRIDGE: To calm ourselves down as we cross "
+                   "a highly dangerous rope bridge, we need to simulate a rope "
+                   "moving around a 2D plane following a highly specific set of"
+                   " rules, and report the number of spaces where the tail of t"
+                   "he rope ended up.", 9)
     
     uvs = au.unitVectors()
     dirMap = {"U":uvs[0], "R":uvs[1], "D":uvs[2], "L":uvs[3]}
 
-    # In this generic template, we're just going to parrot the input file.
     directions = []
     for ln in instrs:
         hVec = dirMap[ln.split(" ")[0]]
@@ -53,8 +52,12 @@ def solve():
 
     print(f"The tail was in {len(tailTracker)} distinct positions.")
 
-    au.printBanner(f"PART TWO - OKAY BUT WHAT IF A REAL ROPE THO: <Do it again "
-                   "but with a longer rope.>")
+    au.printBanner(f"PART TWO - OKAY BUT WHAT IF A REAL ROPE THO: ...aaaand the"
+                   " ropes broke. Fantastic! Now we need to improve our simulat"
+                   "ion (fast) to account for longer ropes (ostensibly so we ca"
+                   "n assess how to fall to avoid being slapped by ropes?). Ext"
+                   "end the length of the rope, and report where the tail of th"
+                   "e rope ends up *now*.")
 
     def whereToMove(tail, head):
         # A longer rope means that each knot no longer goes directly to the 
