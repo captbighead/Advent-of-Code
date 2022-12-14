@@ -18,7 +18,8 @@ def solve():
 
 
     # Go ahead and create a banner here to explain the problem.
-    au.printBanner("PART ONE - SUPPLY STACKS: <Rearrange the original stacks and output the top barrels on each stack.>", 5)
+    au.printBanner("PART ONE - SUPPLY STACKS: <Rearrange the original stacks an"
+                   "d output the top barrels on each stack.>", 5)
     
     # Determined from Visual inspection:
     totalStacks = 9 
@@ -43,14 +44,16 @@ def solve():
         else:
             if l == "":
                 continue
-            l = l.replace("move ", "").replace(" fr", "").replace("m ", "").replace(" t", "").replace("o ", "o")
+            l = l.replace("move ", "").replace(" fr", "").replace("m ", "")\
+                .replace(" t", "").replace("o ", "o")
             instructions.append([int(n)-1 for n in l.split("o")])
             instructions[-1][0] += 1
 
     for stack in stacks:
         stack.reverse()
 
-    # instructions are: num Move operations, source index in stacks, dest index in stacks.
+    # instructions are: num Move operations, source index in stacks, dest index
+    # in stacks.
     for inst in instructions:
         numOps = inst[0]
         src = inst[1]
@@ -63,7 +66,9 @@ def solve():
         print(f"{s[-1]}", end="")
     print()
 
-    au.printBanner("PART TWO - EFFICIENCY: <Rearrange the original stacks and output the top barrels on each stack. You can move multiples at once now>")    
+    au.printBanner("PART TWO - EFFICIENCY: <Rearrange the original stacks and o"
+                   "utput the top barrels on each stack. You can move multiples"
+                   " at once now>")    
 
 
     # The default template will read an input file from the inputs folder with
@@ -101,14 +106,16 @@ def solve():
         else:
             if l == "":
                 continue
-            l = l.replace("move ", "").replace(" fr", "").replace("m ", "").replace(" t", "").replace("o ", "o")
+            l = l.replace("move ", "").replace(" fr", "").replace("m ", "")\
+                .replace(" t", "").replace("o ", "o")
             instructions.append([int(n)-1 for n in l.split("o")])
             instructions[-1][0] += 1
 
     for stack in stacks:
         stack.reverse()
 
-    # instructions are: num Move operations, source index in stacks, dest index in stacks.
+    # instructions are: num Move operations, source index in stacks, dest index 
+    # in stacks.
     for inst in instructions:
         numOps = inst[0]
         src = inst[1]
