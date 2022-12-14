@@ -28,7 +28,7 @@ def solve():
     # Finding the max and output it. 
     print(f"The elf with the most calories was carrying {cargo[-1]} calories.")
 
-    au.printBanner("PART TWO - Contingencies: The elves, in their foresight, re"
+    au.printBanner("PART TWO - CONTINGENCIES: The elves, in their foresight, re"
                    "alized that the top carrier may run out of snacks. To provi"
                    "de a contingency for such a horrible eventuality, they've n"
                    "ow asked for the calories amongst the top three carriers in"
