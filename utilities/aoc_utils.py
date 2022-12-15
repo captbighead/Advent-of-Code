@@ -79,6 +79,10 @@ def vectorAdd(v, u):
     return (v[0] + u[0], v[1] + u[1])
 
 
+def manhattanDistance(xy1, xy2):
+    return abs(xy1[0] - xy2[0]) + abs(xy1[1] - xy2[1])
+
+
 class TreeNode:
 
     def __init__(self, val, parent=None):
