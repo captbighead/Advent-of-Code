@@ -25,181 +25,170 @@ def solve():
                    "course of your journey, while making it out. Sounds like so"
                    "me travelling salesman shenanigans are about to ensue!", 16)
     
-    # Okay, so I really need membership for a given search path to be a very 
-    # fast lookup. To do that, I'm futzing with the hash function so that each
-    # one can generate as unique of a hash as possible. Hashing the timestamp, 
-    # length of the path, and the length of the open valves list is easy enough,
-    # but lots of nodes will have identical hashes there. If each node *in* the 
-    # path contributed to a hash value that didn't have to be determined by 
-    # iterating over the path, though, that would be ideal.
-    #
-    # If we add up values of the node (multiple times if the node is revisited)
-    # and those values were distinct, and prime, then in theory no two paths 
-    # should have the same value, so long as the values aren't divisble by the 
-    # number of occurrences of any other node (IE: a prime number greater than 
-    # the number of occurrences of any node in the list). Since there can be 
-    # some 30 nodes, if the list of ids for each starts at 31 and consists of 
-    # consecutive primes following that, then the hash should be unique? 
-    primes = [31, 37,41,43,47,53,59,61,67,71,73,79,83,89,97,101,103,107,109,113,
-              127,131,137,139,149,151,157,163,167,173,179,181,191,193,197,199,
-              211,223,227,229,241,251,257,263,269,271,277,281,283,293,307,311,
-              313,317,331,337,347,349]
-    hash_fn = {}
-    for ln in valve_strs:
-        hash_fn[ln.replace("Valve ", "")[0:2]] = primes.pop(0)
-
-
     # Bog-standard string parsing
-    nodes = {}
-    paths = {}
+    node_pressure = {}
+    node_exits = {}
+    nodes = []
     for ln in valve_strs:
         ln = ln.replace("Valve ", "").replace(" has flow rate=",",")
         ln = ln.replace("s", "").replace("; tunnel lead to valve ", "|")
         ln = ln.split("|")
-        nodes[ln[0].split(",")[0]] = int(ln[0].split(",")[1])
-        paths[ln[0].split(",")[0]] = ln[1].split(", ")
+        node = ln[0].split(",")[0]
+        nodes.append(node)
+        node_pressure[node] = int(ln[0].split(",")[1])
+        node_exits[node] = ln[1].split(", ")
 
-    max_pressure = 0
-    max_path = None
-    options = bfs_pressureValves(nodes, paths, hash_fn)
-    for sp in options:
-        if sp.system_pressure > max_pressure:
-            max_path = sp
+    # STRATEGY: 
+    #   - Use dijkstra's to map the routes to each node. 
+    #   - Find nodes of consequence: nodes whose valves we need to turn
+    #   - BFS over nodes, where each decision point is picking a valve to turn
+    #       from the remaining valves to turn.
 
-    print(f"The maximum amount of pressure we could release is: {max_pressure}")
+    routes = {}
+    i = 0
+    for i in range(len(nodes)):
+        for j in range(i+1, len(nodes)):
+            # Use dijkstra's to get the route in one direction, and then instead
+            # of doing the costly algorithm to find out the way back, just copy
+            # and flip the list
+            ni = nodes[i]
+            nj = nodes[j]
+            route = dijkstra(ni, nj, node_exits)    
+            routes[(ni, nj)] = route
+            
+            # Copy and flip. Also, remove the tail (routes don't include 
+            # themselves)
+            route = route.copy()
+            route.reverse()
+            routes[(nj, ni)] = route
+
+    # The definitive to-do list
+    valves_to_turn = []
+    for n in nodes:
+        if node_pressure[n] > 0:
+            valves_to_turn.append(n)
+
+    activeVariants = []
+    for v in valves_to_turn:
+        todo = valves_to_turn.copy()
+        todo.remove(v)
+        activeVariants.append(Variant("AA",v,todo,{},routes))
+    
+    successfulVariants = []
+    for t in range(1,31):
+        print(f"\rSimulating minute {t}", end="")
+        variants_to_purge = []
+        variants_this_tick = []
+        for av in activeVariants:
+            newVariants = av.act(t)
+            if newVariants is not None:
+                variants_this_tick.extend(newVariants)
+            if av.goal is None and len(av.todo_list) != 0:
+                variants_to_purge.append(av)
+            if av.goal is None and len(av.todo_list) == 0:
+                successfulVariants.append(av)
+                variants_to_purge.append(av)
+        activeVariants.extend(variants_this_tick)
+        while len(variants_to_purge):
+            vtp = variants_to_purge.pop(0)
+            activeVariants.remove(vtp)
+    print()
 
 
-class SearchPath:
-    """ Just a basic wrapper for the state of the search along this path
-    """
+    bestPressure = 0
+    bestVariant = None
+    for v in successfulVariants:
+        v.pressure = 0
+        for t in range(1,31):
+            if v.log.get(t, False) and v.log[t] == "Turned Valve":
+                v.pressure += (30-t) * node_pressure[v.log[t-1][9:]]
+            if v.pressure > bestPressure:
+                bestVariant = v
+                bestPressure = v.pressure
 
-    def __init__(self, nodes, paths, hash_fn):
-        self.system_pressure = 0
-        self.timestamp = 0
-        self.path = ["AA"]
-        self.nodes = nodes
-        self.paths = paths
-        self.openvalves = []
-        self.hash_fn = hash_fn
-        self.hash_from_path = hash_fn["AA"]
+    print(f"The best pressure achievable is {bestPressure}. It was achieved wit"
+          "h the following steps:\n")
+    for t in range(1,31):
+        logmsg = bestVariant.log.get(t,"")
+        if logmsg == "":
+            break
+        print(f"Minute {t}: {logmsg}")
 
 
-    def getChildPaths(self):
-        """ Creates child SearchPath objects from actions you could perform
-        """
-        # If the timestamp is 30, we're actuall done.
-        if self.timestamp == 30: 
-            return []
+class Variant:
 
-        # current state, simplified for reference
-        node = self.path[-1]
-        childPaths = []
-        pressure = self.nodes[node]
+    def __init__(self, location, goal, todo_list, log, map):
+        self.todo_list = todo_list
+        self.location = location
+        self.map = map
+        self.goal = goal
+        self.log = log
 
-        # Only create the open valve option if it makes sense; IE: if it's not
-        # already open, and if opening it would add to the system pressure.
-        if pressure != 0 and node not in self.openvalves:
-            child = self.birth()
-            child.timestamp += 1
-            child.system_pressure += pressure * (30 - child.timestamp)
-            child.openvalves.append(node)
-            childPaths.append(child)
 
-        # Create the children generated from moving to each child node.
-        for dest in self.paths[self.path[-1]]:
-            child = self.birth()
-            child.timestamp += 1
-            child.path.append(dest)
-            child.hash_from_path += self.hash_fn[dest]
-            childPaths.append(child)
+    def haveKids(self):
+        kids = []
+        for n in self.todo_list:
+            cGoal = n
+            cTodo = self.todo_list.copy()
+            cTodo.remove(n)
+            cLog = self.log.copy()
+            kids.append(Variant(self.location, cGoal, cTodo, cLog, self.map))
+        return kids
+
+
+    def act(self, t):
+        # We have performed our purpose in this world, and now shall perish
+        if self.goal is None:
+            return None
+
+        # If we reached our goal, we spawn our possible children, and then sit
+        # content, knowing we've done all we can for the cause.
+        if self.location == self.goal:
+            self.goal = None
+            self.log[t] = "Turned Valve"
+            
+            if len(self.todo_list):
+                return self.haveKids()
+            else:
+                return None
         
-        return childPaths
+        # If we get here, we're moving towards our goal:
+        self.location = self.map[(self.location, self.goal)][1]
+        self.log[t] = "Moved to " + self.location
+        return None
+        
 
 
-    def birth(self):
-        child = SearchPath(self.nodes, self.paths, self.hash_fn)
-        child.system_pressure = self.system_pressure
-        child.timestamp = self.timestamp
-        child.path = self.path.copy()
-        child.hash_from_path = self.hash_from_path
-        return child
 
-
-    def isFinished(self):
-        return self.timestamp == 30
             
 
-    def __hash__(self):
-        h = self.timestamp * 1000000000 
-        h += len(self.path) * 10000000 
-        h += len(self.openvalves) * 100000
-        h += self.hash_from_path
-        return h
-    
-
-    def __eq__(self, value):
-        ts = self.timestamp == value.timestamp
-        sp = self.system_pressure == value.system_pressure
-        p = self.path == value.path
-        ov = self.openvalves == value.openvalves
-        return ts and sp and p and ov
 
 
-def bfs_pressureValves(nodemap, pathmap, hash_fn):
-    updates = 0
-    rejects = 0
-    time_start = time.time()    # Track progression as we go so I can see if we
-                                # are ballooning into infinity
+def dijkstra(orig, dest, path_map):
+    """ Returns the shortest path from orig to dest in paths.
+    """
+    unvisited = set([key for key in path_map.keys()])
+    paths = {uv:None for uv in unvisited}
+    paths[orig] = []
+    visit_queue = [orig]
 
-    # Initialize this custom search queue as a pseudo link-list that is also a 
-    # hash map so that we can make sure we can check membership speedy-quick
-    # while still being able to use it like a queue
-    first = SearchPath(nodemap, pathmap, hash_fn)
-    first_children = first.getChildPaths()
-    search_queue = {first:first_children[0]}
-    for i in range(1, len(first_children)):
-        search_queue[first_children[i-1]] = first_children[i]
+    while len(visit_queue):
+        dist = lambda uv:len(paths[uv]) if paths[uv] is not None else 999999999
+        visit_queue = sorted(visit_queue, key=dist)
+        current = visit_queue.pop(0)
+        unvisited.remove(current)
 
-    # Track our complete paths in a hashmap too so we can check membership 
-    # speedy-quick
-    complete_paths = {}
-    discarded_paths = {}
+        if current == dest:
+            paths[current].append(dest)
+            return paths[current]
 
-    next = first
-    tail = first_children[-1]
-    while len(search_queue.keys()):
-
-        # Progress notifications:
-        elapsed = time.time() - time_start
-        if elapsed > 10:
-            updates += 1
-            print(f"After {updates*10} seconds, we have {len(search_queue)} nod"
-                  f"es in the search queue and {len(complete_paths)} in the com"
-                  "pleted paths list.")
-            time_start = time.time()
-
-        # Actual BFS
-        next = search_queue.pop(next)
-        if next.isFinished():
-            complete_paths[next] = True
-        else:
-            discarded_paths[next] = True
-            for child in next.getChildPaths():
-                # sq: Child is in search queue as key or the tail
-                sq = search_queue.get(child, None) is not None or tail == child
-                # cp: Child is in the completed paths
-                cp = complete_paths.get(child, False)
-                # dp: Child is in the discarded paths
-                dp = discarded_paths.get(child, False)
-
-                # If child is in none of the lists, we add it to the queue
-                if not sq and not cp and not dp:
-                    search_queue[tail] = child
-                    tail = child
-                else:
-                    rejects += 1
-    return complete_paths
-
-
+        for neighbour in path_map[current]:
+            if neighbour in unvisited:
+                ourpath = paths[current].copy()
+                ourpath.append(current)
+                if paths[neighbour] is None or len(ourpath) < len(paths[neighbour]):
+                    paths[neighbour] = ourpath
+                if neighbour not in visit_queue:
+                    visit_queue.append(neighbour)
 
 
