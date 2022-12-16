@@ -15,8 +15,9 @@ import solutions.day12 as d12
 import solutions.day13 as d13
 import solutions.day14 as d14
 import solutions.day15 as d15
+import solutions.day16 as d16
 
-solns = [d1,d2,d3,d4,d5,d6,d7,d8,d9,d10,d11,d12,d13,d14,d15]
+solns = [d1,d2,d3,d4,d5,d6,d7,d8,d9,d10,d11,d12,d13,d14,d15,d16]
 lastSoln = len(solns)
 
 print()

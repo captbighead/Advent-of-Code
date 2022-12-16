@@ -46,6 +46,9 @@
     <Compile Include="solutions\day15.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="solutions\day16.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="solutions\day2.py">
       <SubType>Code</SubType>
     </Compile>
