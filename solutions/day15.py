@@ -5,6 +5,71 @@ import time
 import utilities.aoc_utils as au
 
 def solve():
+
+    print("Whoops! Started a re-try of this one but didn't finish it yet. Lemme"
+          " just reroute ya here...")
+    solve_orig()
+    return
+
+    inputName = __name__.replace("solutions.","inputs\\") + ".txt"
+    sensor_readings = au.inputFileAsStrings(inputName)
+    sr_ex = ["Sensor at x=2, y=18: closest beacon is at x=-2, y=15",
+             "Sensor at x=9, y=16: closest beacon is at x=10, y=16",
+             "Sensor at x=13, y=2: closest beacon is at x=15, y=3",
+             "Sensor at x=12, y=14: closest beacon is at x=10, y=16",
+             "Sensor at x=10, y=20: closest beacon is at x=10, y=16",
+             "Sensor at x=14, y=17: closest beacon is at x=10, y=16",
+             "Sensor at x=8, y=7: closest beacon is at x=2, y=10",
+             "Sensor at x=2, y=0: closest beacon is at x=2, y=10",
+             "Sensor at x=0, y=11: closest beacon is at x=2, y=10",
+             "Sensor at x=20, y=14: closest beacon is at x=25, y=17",
+             "Sensor at x=17, y=20: closest beacon is at x=21, y=22",
+             "Sensor at x=16, y=7: closest beacon is at x=15, y=3",
+             "Sensor at x=14, y=3: closest beacon is at x=15, y=3",
+             "Sensor at x=20, y=1: closest beacon is at x=15, y=3"]
+    
+    # Different benchmarks for the example and the actual problem. 
+    y_check = 2000000
+    y_check_ex = 10
+    y_part_2 = 4000000
+    y_part_2_ex = 20
+
+    # The now-standard commentable lines that switch between running for the 
+    # example and for the output. 
+    #sensor_readings = sr_ex
+    #y_check = y_check_ex
+    #y_part_2 = y_part_2_ex
+
+    au.printBanner("PART ONE - BEACON EXCLUSION ZONE: <Given a list of sensors "
+                   "and the closest beacons to them (via manhattan distance), o"
+                   "utput the number of spaces on y=2,000,000 that cannot possi"
+                   "bly contain a beacon.>", 15)
+    
+    # Bog-standard string processing.
+    sensors = []
+    for ln in sensor_readings:
+        ln = ln.replace("Sensor at ", "").replace(" closest beacon is at ", "")
+        ln = ln.replace("x=", "").replace(" y=","").split(":")
+        sens = tuple([int(xy) for xy in ln[0].split(",")])
+        beac = tuple([int(xy) for xy in ln[1].split(",")])
+        sensors.append(Sensor(sens, beac))
+        
+
+
+
+class Sensor:
+
+    def __init__(self, xy, bxy):
+        self.xy = xy
+        self.beacon = xy
+        mr = au.manhattanDistance(xy, bxy)
+        self.mr = mr
+        cs = [au.vectorAdd(xy, (v[0]*mr, v[1]*mr)) for v in au.unitVectors()]
+        self.corners = cs
+
+
+
+def solve_orig():
     inputName = __name__.replace("solutions.","inputs\\") + ".txt"
     sensor_readings = au.inputFileAsStrings(inputName)
     sr_ex = ["Sensor at x=2, y=18: closest beacon is at x=-2, y=15",
