@@ -63,104 +63,172 @@ def solve():
             routes[(nj, ni)] = route
 
     # The definitive to-do list
-    valves_to_turn = []
+    valves_to_turn = set()
     for n in nodes:
         if node_pressure[n] > 0:
-            valves_to_turn.append(n)
+            valves_to_turn.add(n)
 
-    activeVariants = []
-    for v in valves_to_turn:
-        todo = valves_to_turn.copy()
-        todo.remove(v)
-        activeVariants.append(Variant("AA",v,todo,{},routes))
+    # Now for the breadth first search. 
+    first = Seeker(valves_to_turn, routes, node_pressure, nodes)
+    processed = set([first])
+    finished = set()
+    queue = [first]
+    while len(queue):
+        this = queue.pop(0)
+        processed.add(this)
+        children = this.getChildren(processed)
+        this_finished = children == [] or not len(this.todo_list)
+        if this_finished:
+            finished.add(this)
+        else:
+            queue.extend(children)
+
+    maxPressure = 0
+    maxSeeker = None
+    for f in finished:
+        if f.pressure > maxPressure:
+            maxSeeker = f
+            maxPressure = f.pressure
+
+    print(f"The maximum pressure achievable is {maxPressure}.")
+
+    au.printBanner("PART TWO - MULTITHREADING: <Now an elephant can run simulta"
+                   "neously to us. What's the maximum pressure we can get if we"
+                   " have two of us running at once?>")
+
+    ## OOOOOH SHIT SON
+    ## REVELATION: 'Finished' is already a list of full paths of seekers. If we
+    ## can iterate over the list and combine them in such a way that one 
+    ## represents a distinct path for the human and the other a distinct path 
+    ## for the elephants, then we already have our solution, we just add the 
+    ## pressures!
+
+    # The following works for the test input, but it doesn't work for the actual
+    # input. I think the reason it works for the test data is that it assumes 
+    # that amongst the two people, all nodes would be hit. The "HashDisjoints"
+    # is supposed to solve that but it doesn't... yet
+
+
+    comboSpace = []
+    hashVals = {}
+    for p in processed:
+        # Narrow down the search space. >= 4 and todo_list != [] is known for
+        # sure. >= 15 is a guess. 
+        if p.t >= 4 and p.t <= 21 and p.todo_list != []:  
+            comboSpace.append(p)
+            hashVals.setdefault(p.todohash, [])
+            hashVals[p.todohash].append(p)
+
+    hashDisjoints = {}
+    for h in hashVals.keys():
+        hashDisjoints[h] = []
+        for h2 in hashVals.keys():
+            if h & h2 == 0 and h2 != 0:
+                hashDisjoints[h].append(h2)
+
+    comboSpace = sorted(comboSpace, key=lambda s:s.pressure)
+    comboSpace.reverse()
+    comboMax = 0
+    print(f"There were {len(comboSpace)} possible paths through the tunnels.")
+    for i in range(len(comboSpace)):
+        si = comboSpace[i]
+        for sj in hashVals.get(si.comphash, []):
+            comboMax = max(comboMax, si.pressure2 + sj.pressure2)
+        #for dj in hashDisjoints.get(si.comphash,[]):
+        #for sj in hashVals.get(dj, []):
+
+    print(f"I think the most pressure you can get with an elephant'"
+            f"s help is: {comboMax}")
+            
+
+
+
+
+
+            
+
     
-    successfulVariants = []
-    for t in range(1,31):
-        print(f"\rSimulating minute {t}", end="")
-        variants_to_purge = []
-        variants_this_tick = []
-        for av in activeVariants:
-            newVariants = av.act(t)
-            if newVariants is not None:
-                variants_this_tick.extend(newVariants)
-            if av.goal is None and len(av.todo_list) != 0:
-                variants_to_purge.append(av)
-            if av.goal is None and len(av.todo_list) == 0:
-                successfulVariants.append(av)
-                variants_to_purge.append(av)
-        activeVariants.extend(variants_this_tick)
-        while len(variants_to_purge):
-            vtp = variants_to_purge.pop(0)
-            activeVariants.remove(vtp)
-    print()
 
 
-    bestPressure = 0
-    bestVariant = None
-    for v in successfulVariants:
-        v.pressure = 0
-        for t in range(1,31):
-            if v.log.get(t, False) and v.log[t] == "Turned Valve":
-                v.pressure += (30-t) * node_pressure[v.log[t-1][9:]]
-            if v.pressure > bestPressure:
-                bestVariant = v
-                bestPressure = v.pressure
+class Seeker:
 
-    print(f"The best pressure achievable is {bestPressure}. It was achieved wit"
-          "h the following steps:\n")
-    for t in range(1,31):
-        logmsg = bestVariant.log.get(t,"")
-        if logmsg == "":
-            break
-        print(f"Minute {t}: {logmsg}")
-
-
-class Variant:
-
-    def __init__(self, location, goal, todo_list, log, map):
+    def __init__(self, todo_list, map, valves, nodes, t=30, loc="AA", press=0):
+        self.t = t
+        self.location = loc
+        self.pressure = press
         self.todo_list = todo_list
-        self.location = location
         self.map = map
-        self.goal = goal
-        self.log = log
+        self.valve_lookup = valves
+        self.nodes = nodes
+        self.completed = set()
+        self.pressure2 = 0
+        self.todohash = 0
+        self.comphash = 0
 
 
-    def haveKids(self):
-        kids = []
-        for n in self.todo_list:
-            cGoal = n
+    def getChildren(self, processed):
+        children = []
+        for loc in self.todo_list:
+            dist = len(self.map[(self.location, loc)])
+            # 'dist' is the time in minutes it takes to get to the node *and* 
+            # turn the valve.
+            ct = self.t - dist   
+            if ct < 0:
+                # This child has no time, move on
+                continue
+
+            # The pressure at this node will be the remaining time after we've 
+            # moved there and turned the valve multiplied by the pressure 
+            # released from that valve every minute.
+            cPress = self.pressure + ct * self.valve_lookup[loc]
+            cPress2 = self.pressure2 + (ct-4) * self.valve_lookup[loc]
             cTodo = self.todo_list.copy()
-            cTodo.remove(n)
-            cLog = self.log.copy()
-            kids.append(Variant(self.location, cGoal, cTodo, cLog, self.map))
-        return kids
+            cTodo.remove(loc)
+            cMap = self.map
+            cValves = self.valve_lookup
+            cIds = self.nodes
+            child = Seeker(cTodo, cMap, cValves, cIds, ct, loc, cPress)
+            child.completed = self.completed.copy()
+            child.completed.add(loc)
+            child.updateHashes()
+            child.pressure2 = cPress2
+            if child not in processed:
+                children.append(child)
+        return children
 
 
-    def act(self, t):
-        # We have performed our purpose in this world, and now shall perish
-        if self.goal is None:
-            return None
-
-        # If we reached our goal, we spawn our possible children, and then sit
-        # content, knowing we've done all we can for the cause.
-        if self.location == self.goal:
-            self.goal = None
-            self.log[t] = "Turned Valve"
+    def updateHashes(self):
+        self.todohash = 0
+        self.comphash = 0
+        power = 0
+        for n in self.nodes:
+            self.todohash += 1 * (2 ** power) if n in self.todo_list else 0
+            self.comphash += 1 * (2 ** power) if n in self.completed else 0
+            power += 1
             
-            if len(self.todo_list):
-                return self.haveKids()
-            else:
-                return None
-        
-        # If we get here, we're moving towards our goal:
-        self.location = self.map[(self.location, self.goal)][1]
-        self.log[t] = "Moved to " + self.location
-        return None
-        
 
+    def __hash__(self):
+        # Needs to be equal to any other hash that has been to the same 
+        # locations 
+        power = 10 ** (len(self.nodes) + 3)
+        ret = self.pressure * power
+        power //= 100
+        ret += self.t * power
+        power //= 10
+        for n in self.nodes:
+            ret += power if n not in self.todo_list else 0
+            power //= 10
+        return ret
 
+    def __eq__(self, value):
+        t = self.t == value.t                 
+        l = self.location == value.location  
+        p = self.pressure == value.pressure  
+        tl = self.todo_list == value.todo_list  
+        return t and l and p and tl
+    
 
-            
+           
 
 
 
