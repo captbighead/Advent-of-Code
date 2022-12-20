@@ -116,26 +116,30 @@ def solve():
         # sure. >= 15 is a guess. 
         if p.t >= 4 and p.t <= 21 and p.todo_list != []:  
             comboSpace.append(p)
-            hashVals.setdefault(p.todohash, [])
-            hashVals[p.todohash].append(p)
+            hashVals.setdefault(p.comphash, [])
+            #hashVals[p.todohash].append(p)
+            hashVals[p.comphash].append(p)
 
     hashDisjoints = {}
     for h in hashVals.keys():
         hashDisjoints[h] = []
         for h2 in hashVals.keys():
-            if h & h2 == 0 and h2 != 0:
+            if h & h2 == 0:
                 hashDisjoints[h].append(h2)
 
+
+    djChecker = {}
     comboSpace = sorted(comboSpace, key=lambda s:s.pressure)
     comboSpace.reverse()
     comboMax = 0
     print(f"There were {len(comboSpace)} possible paths through the tunnels.")
     for i in range(len(comboSpace)):
         si = comboSpace[i]
-        for sj in hashVals.get(si.comphash, []):
-            comboMax = max(comboMax, si.pressure2 + sj.pressure2)
-        #for dj in hashDisjoints.get(si.comphash,[]):
-        #for sj in hashVals.get(dj, []):
+        for dj in hashDisjoints.get(si.comphash,[]):
+            for sj in hashVals.get(dj, []):
+        #for sj in hashVals.get(si.comphash, []):
+        #    djChecker[si.comphash & sj.todohash] = (si.comphash , sj.todohash)
+                comboMax = max(comboMax, si.pressure2 + sj.pressure2)
 
     print(f"I think the most pressure you can get with an elephant'"
             f"s help is: {comboMax}")
