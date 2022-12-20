@@ -1,0 +1,42 @@
+{
+	// Place your Advent-of-Code workspace snippets here. Each snippet is defined under a snippet name and has a scope, prefix, body and 
+	// description. Add comma separated ids of the languages where the snippet is applicable in the scope field. If scope 
+	// is left empty or omitted, the snippet gets applied to all languages. The prefix is what is 
+	// used to trigger the snippet and the body will be expanded and inserted. Possible variables are: 
+	// $1, $2 for tab stops, $0 for the final cursor position, and ${1:label}, ${2:another} for placeholders. 
+	// Placeholders with the same ids are connected.
+	// Example:
+	"Advent of Code Boilerplate": {
+		"scope": "python",
+		"prefix": "aoc",
+		"body": [
+			"import utilities.aoc_utils as au",
+			"",
+			"def solve():",
+			"    inputName = __name__.replace(\"solutions.\",\"inputs\\\\\") + \".txt\"",
+			"    lines = au.inputFileAsStrings(inputName)",
+			"    lines_ex = [\"Test data\", \"Examples\"]   # Example data goes here",
+			"    ",
+			"    # Comment below switches between example and actual input",
+			"    lines = lines_ex",
+			"    ",
+			"    # Data parser goes here",
+			"    ",
+			"    au.printBanner(\"PART ONE - ${1:PROBLEM NAME}: <${2:Problem Statement}>\", ${0})",
+			"    ",
+			"    # The actual solution goes here.",
+			"    for i in lines:",
+			"        print(i)"
+		],
+		"description": "The starting point of every advent of code solution."
+	},
+
+	"2D Grid Bounds": {
+		"scope": "python",
+		"prefix": "2dg b",
+		"body": [
+			"bounds = {\"minX\":${1:0},\"maxX\":${2:0},\"minY\":${3:0},\"maxY\":${4:0}}"
+		],
+		"description": "Generate a set of bounds for a 2D grid as per the aoc_utils"
+	}
+}
